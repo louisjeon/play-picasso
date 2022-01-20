@@ -1,6 +1,6 @@
 # 🎨 Play Picasso
 
-## 🎍Introduction
+## 🎍 Introduction
 
 ---
 
@@ -8,21 +8,7 @@
 
 <br/>
 
-## 👷Things we considered for the website
-
----
-
-- Cross browsing
-
-- Media query
-
-- User experience
-
-- Design aestetics
-
-<br/>
-
-## 🔧Tech Stack
+## 🔧 Tech Stack
 
 ---
 
@@ -44,7 +30,21 @@
 
 <br/>
 
-## 🎯Update History
+## 👷 Things we considered for the website
+
+---
+
+- Cross browsing
+
+- Media query
+
+- User experience
+
+- Design aestetics
+
+<br/>
+
+## 🎯 Update History
 
 ---
 
