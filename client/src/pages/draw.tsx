@@ -7,10 +7,12 @@ import {
   useRef,
   useState,
 } from "react";
+import { useSelector } from "react-redux";
 import { axiosInstance } from "../config";
 
 import { useColors } from "../hooks/useColors";
 import { useFeelings } from "../hooks/useFeelings";
+import { IState } from "../types";
 
 const Draw: React.FC = () => {
   const feelings = useFeelings();
@@ -24,6 +26,7 @@ const Draw: React.FC = () => {
   const [mouseDown, setMouseDown] = useState(false);
   const [touchStart, setTouchStart] = useState(false);
   const [desc, setDesc] = useState("");
+  const user: any = useSelector<IState>((state) => state.auth.user);
 
   useEffect(() => {
     if (canvasRef.current) {
@@ -99,8 +102,8 @@ const Draw: React.FC = () => {
     }
 
     const newPost = {
-      username: "demoUser",
-      userId: "demoID",
+      username: user.username || "demoUser",
+      userId: user._id || "demoID",
       desc,
       img,
       feeling,

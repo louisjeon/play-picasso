@@ -5,8 +5,6 @@ const Home = () => {
     <HomeContainer>
       <h2>Play Picasso</h2>
       <br />
-      <p>Welcome to Play Picasso.</p>
-      <br />
       <p>
         Play Picasso is a modern art social network service where users can
         share their feelings with simple drawings.

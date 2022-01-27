@@ -1,8 +1,10 @@
 import { Box, Flex, Image } from "@chakra-ui/react";
 import styled from "@emotion/styled";
 import React, { useState } from "react";
+import { useSelector } from "react-redux";
 import { axiosInstance } from "../config";
 import { Feelings, useFeelings } from "../hooks/useFeelings";
+import { IState } from "../types";
 
 interface PostProps {
   _id: string;
@@ -27,7 +29,8 @@ export const Post: React.FC<PostProps> = ({
   username,
   feeling,
 }) => {
-  const likedBefore = likes.includes("fakeUserId");
+  const user: any = useSelector<IState>((state) => state.auth.user);
+  const likedBefore = likes.includes(user._id);
   const feelings = useFeelings();
   const [clicked, setClicked] = useState(false);
   const [liked, setLiked] = useState(likedBefore);
@@ -53,7 +56,7 @@ export const Post: React.FC<PostProps> = ({
 
   const handleLike = async () => {
     try {
-      await axiosInstance.put(`/posts/${_id}/like`, { userId: "fakeUserId" });
+      await axiosInstance.put(`/posts/${_id}/like`, { userId: user._id });
       setLiked((unliking) => {
         if (likedBefore) {
           if (unliking) {
