@@ -18,11 +18,26 @@ mongoose.connect(process.env.MONGO_URL, { useNewUrlParser: true }, () => {
 app.use(express.json());
 app.use(helmet());
 app.use(morgan("common"));
+app.use(function (req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept, POST, PUT, GET, DELETE, OPTIONS, Access-Control-Allow-Headers, Authorization"
+  );
+  res.header("Access-Control-Allow-Methods", "DELETE, POST, GET, OPTIONS, PUT");
+  next();
+});
 
 app.use("/api/users", userRoute);
 app.use("/api/auth", authRoute);
 app.use("/api/posts", postRoute);
 
-app.listen(8800, () => {
+// app.use(express.static(path.join(__dirname, "/client")));
+
+// app.get("*", (req, res) => {
+//   res.sendFile(path.join(__dirname, "/client/build", "index.html"));
+// });
+
+app.listen(process.env.PORT || 8800, () => {
   console.log("Backend server is running!");
 });

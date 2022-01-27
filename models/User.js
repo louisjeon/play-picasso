@@ -5,7 +5,7 @@ const UserSchema = new mongoose.Schema(
     username: {
       type: String,
       require: true,
-      min: 3,
+      min: 5,
       max: 20,
       unique: true,
     },
@@ -56,6 +56,10 @@ const UserSchema = new mongoose.Schema(
     relationship: {
       type: Number,
       enum: [1, 2, 3],
+    },
+    likedPosts: {
+      type: Array,
+      default: [],
     },
   },
   { timestamps: true }

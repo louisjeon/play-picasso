@@ -70,7 +70,7 @@ router.get("/:id", async (req, res) => {
 });
 
 //get following posts
-router.get("/timeline/following", async (req, res) => {
+router.get("/following", async (req, res) => {
   try {
     const currentUser = await User.findById(req.body.userId);
     const userPosts = await Post.find({ userId: currentUser._id });
@@ -86,5 +86,13 @@ router.get("/timeline/following", async (req, res) => {
 });
 
 //get all posts
+router.get("/", async (req, res) => {
+  try {
+    const allPosts = (await Post.find()).reverse();
+    res.status(200).json(allPosts);
+  } catch (err) {
+    res.status(500).json(err);
+  }
+});
 
 module.exports = router;

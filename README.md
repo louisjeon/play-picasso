@@ -12,17 +12,17 @@
 
 ---
 
+- React
+
 - TypeScript
-
-- Styled-Comonents
-
-- Chakra-UI
-
-- NextJS
 
 - Redux
 
 - NodeJS/Express
+
+- Emotion
+
+- Chakra-UI
 
 - Mongoose
 
@@ -50,7 +50,7 @@
 
 - 0.0.1
 
-  - Structured basic frontend with Typescript, NextJS, ChakraUI, Styled-Components and etc.
+  - Structured basic frontend with React, Typescript, ChakraUI, Styled-Components and etc.
 
 - 0.0.2
 

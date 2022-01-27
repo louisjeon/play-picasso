@@ -1,34 +1,46 @@
-import { useEffect, useRef, useState } from "react";
-import styled from "styled-components";
+import styled from "@emotion/styled";
+import {
+  ChangeEvent,
+  MouseEvent,
+  TouchEvent,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
+import { axiosInstance } from "../config";
+
 import { useColors } from "../hooks/useColors";
-import { useEmojis } from "../hooks/useEmojis";
+import { useFeelings } from "../hooks/useFeelings";
 
 const Draw: React.FC = () => {
-  const emojis = useEmojis();
+  const feelings = useFeelings();
   const colors = useColors();
-  const canvasRef = useRef(null);
-  const [ctx, setCtx] = useState(null);
-  const [emoji, setEmoji] = useState("happy");
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const [ctx, setCtx] = useState<CanvasRenderingContext2D>();
+  const [feeling, setFeeling] = useState("happy");
   const [eraseOn, setEraseOn] = useState(false);
   const [brushColor, setBrushColor] = useState("#2c2c2c");
   const [brushWidth, setBrushWidth] = useState(2.5);
   const [mouseDown, setMouseDown] = useState(false);
   const [touchStart, setTouchStart] = useState(false);
+  const [desc, setDesc] = useState("");
 
   useEffect(() => {
-    setCtx(canvasRef.current.getContext("2d"));
-    canvasRef.current.height = canvasRef.current.clientHeight;
-    canvasRef.current.width = canvasRef.current.clientWidth;
-    if (ctx) {
-      ctx.fillStyle = "white";
-      ctx.fillRect(0, 0, canvasRef.current.height, canvasRef.current.width);
-      ctx.strokeStyle = "#2c2c2c";
-      ctx.lineWidth = 2.5;
+    if (canvasRef.current) {
+      setCtx(canvasRef.current.getContext("2d")!);
+      canvasRef.current.height = canvasRef.current.clientHeight;
+      canvasRef.current.width = canvasRef.current.clientWidth;
+      if (ctx) {
+        ctx.fillStyle = "white";
+        ctx.fillRect(0, 0, canvasRef.current.height, canvasRef.current.width);
+        ctx.strokeStyle = "#2c2c2c";
+        ctx.lineWidth = 2.5;
+      }
     }
-  }, [canvasRef.current]);
+  }, [ctx]);
 
-  const handleChange = (e) => {
-    setEmoji(e.currentTarget.value);
+  const handleChange = (e: ChangeEvent<HTMLSelectElement>) => {
+    setFeeling(e.currentTarget.value);
   };
 
   // Mouse Devices
@@ -36,18 +48,18 @@ const Draw: React.FC = () => {
     setMouseDown(true);
   };
 
-  const handleMouseMove = (e) => {
+  const handleMouseMove = (e: MouseEvent) => {
     const x = e.nativeEvent.offsetX;
     const y = e.nativeEvent.offsetY;
     if (!mouseDown) {
-      ctx.beginPath();
-      ctx.moveTo(x, y);
+      ctx?.beginPath();
+      ctx?.moveTo(x, y);
     } else {
       if (eraseOn) {
-        ctx.fillRect(x, y, brushWidth * 8, brushWidth * 8);
+        ctx?.fillRect(x, y, brushWidth * 8, brushWidth * 8);
       } else {
-        ctx.lineTo(x, y);
-        ctx.stroke();
+        ctx?.lineTo(x, y);
+        ctx?.stroke();
       }
     }
   };
@@ -61,34 +73,59 @@ const Draw: React.FC = () => {
     setTouchStart(true);
   };
 
-  const handleTouchMove = (e) => {
-    const x = e.touches[0].clientX - e.target.offsetLeft;
-    const y = e.touches[0].clientY - e.target.offsetTop;
+  const handleTouchMove = (e: TouchEvent<HTMLCanvasElement>) => {
+    const x = e.touches[0].clientX - e.currentTarget.offsetLeft;
+    const y = e.touches[0].clientY - e.currentTarget.offsetTop;
     if (touchStart) {
-      ctx.beginPath();
-      ctx.moveTo(x, y);
+      ctx?.beginPath();
+      ctx?.moveTo(x, y);
       setTouchStart(false);
     } else {
       if (eraseOn) {
-        ctx.fillRect(x, y, brushWidth * 8, brushWidth * 8);
+        ctx?.fillRect(x, y, brushWidth * 8, brushWidth * 8);
       } else {
-        ctx.lineTo(x, y);
-        ctx.stroke();
+        ctx?.lineTo(x, y);
+        ctx?.stroke();
       }
+    }
+  };
+
+  // Post
+  const handlePost = async () => {
+    let img = "";
+    if (canvasRef.current) {
+      // convert current drawing to URL
+      img = canvasRef.current.toDataURL("image/png");
+    }
+
+    const newPost = {
+      username: "demoUser",
+      userId: "demoID",
+      desc,
+      img,
+      feeling,
+    };
+
+    try {
+      await axiosInstance.post("/posts", newPost);
+      window.alert("Post has been successfully created.");
+      window.location.replace("/feed");
+    } catch (err) {
+      console.log(err);
     }
   };
 
   return (
     <DrawContainer>
       <div className="top">
-        <p>I'm {emoji}.</p>
+        <p>I'm {feeling}.</p>
         <select
           onChange={handleChange}
           defaultValue="happy"
           name="emoji"
           id="emoji"
         >
-          {Object.entries(emojis).map(([text, emoji], index) => (
+          {Object.entries(feelings).map(([text, emoji], index) => (
             <option key={index} value={text}>
               {emoji}
             </option>
@@ -139,7 +176,7 @@ const Draw: React.FC = () => {
             onChange={(e) => {
               setBrushWidth(+e.currentTarget.value);
               if (ctx) {
-                ctx.lineWidth = e.currentTarget.value;
+                ctx.lineWidth = +e.currentTarget.value;
               }
             }}
           />
@@ -160,8 +197,8 @@ const Draw: React.FC = () => {
           <button
             id="clear"
             onClick={() => {
-              if (window.confirm("Clear the canvas?")) {
-                ctx.fillRect(
+              if (window.confirm("Clear the canvas?") && canvasRef.current) {
+                ctx?.fillRect(
                   0,
                   0,
                   canvasRef.current.height,
@@ -175,25 +212,32 @@ const Draw: React.FC = () => {
           <button
             id="save"
             onClick={() => {
-              const link = document.createElement("a");
-              link.href = canvasRef.current.toDataURL("image/png");
-              link.download = "PLAY_PICASSO";
-              link.click();
+              if (canvasRef.current) {
+                const link = document.createElement("a");
+                link.href = canvasRef.current.toDataURL("image/png");
+                link.download = "PLAY_PICASSO";
+                link.click();
+              }
             }}
           >
             Save
           </button>
         </div>
       </div>
-      <textarea placeholder="Type..." />
-      <button>Post</button>
+      <textarea
+        placeholder="Type..."
+        onChange={(e) => {
+          setDesc(e.currentTarget.value);
+        }}
+      />
+      <button onClick={handlePost}>Post</button>
     </DrawContainer>
   );
 };
 
 const DrawContainer = styled.div`
   overflow: hidden;
-  font-size: 20px;
+  font-size: 16px;
   color: black;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
   box-shadow: 10px 5px 5px lightgray;

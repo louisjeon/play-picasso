@@ -1,7 +1,7 @@
 import { Flex } from "@chakra-ui/react";
 import { NavBarItem } from "./NavBarItem";
 
-export const NavBar = (props) => {
+export const NavBar = () => {
   return (
     <Flex w="90%" mt="3vh" justifyContent="space-around">
       <NavBarItem href="/" id={0} />

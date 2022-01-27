@@ -1,5 +1,5 @@
-import { Box, Flex } from "@chakra-ui/react";
-import Link from "next/link";
+import { Flex } from "@chakra-ui/react";
+import { Link } from "react-router-dom";
 
 interface NavBarItemProps {
   href: string;
@@ -10,7 +10,7 @@ export const NavBarItem: React.FC<NavBarItemProps> = ({ href, id }) => {
   const iconNames = ["home", "dashboard", "trending_up", "explore", "gesture"];
 
   return (
-    <Link href={href}>
+    <Link to={href} style={{ width: "100%" }}>
       <Flex
         flex="1"
         _hover={{ cursor: "pointer" }}
