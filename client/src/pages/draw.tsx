@@ -8,9 +8,10 @@ import {
   useState,
 } from "react";
 import { useSelector } from "react-redux";
-import { axiosInstance } from "../config";
+import { axiosInstance } from "../api";
 
 import { useColors } from "../hooks/useColors";
+import { useDarkMode } from "../hooks/useDarkMode";
 import { useFeelings } from "../hooks/useFeelings";
 import { IState } from "../types";
 
@@ -27,6 +28,7 @@ const Draw: React.FC = () => {
   const [touchStart, setTouchStart] = useState(false);
   const [desc, setDesc] = useState("");
   const user: any = useSelector<IState>((state) => state.auth.user);
+  const darkMode = useDarkMode();
 
   useEffect(() => {
     if (canvasRef.current) {
@@ -35,7 +37,12 @@ const Draw: React.FC = () => {
       canvasRef.current.width = canvasRef.current.clientWidth;
       if (ctx) {
         ctx.fillStyle = "white";
-        ctx.fillRect(0, 0, canvasRef.current.height, canvasRef.current.width);
+        ctx.fillRect(
+          0,
+          0,
+          canvasRef.current.height + 10,
+          canvasRef.current.width + 10
+        );
         ctx.strokeStyle = "#2c2c2c";
         ctx.lineWidth = 2.5;
       }
@@ -119,7 +126,13 @@ const Draw: React.FC = () => {
   };
 
   return (
-    <DrawContainer>
+    <DrawContainer
+      style={{
+        boxShadow: `10px 5px 5px ${darkMode ? "black" : "lightgray"}`,
+        backgroundColor: darkMode ? "transparent" : "red",
+        color: darkMode ? "red" : "white",
+      }}
+    >
       <div className="top">
         <p>I'm {feeling}.</p>
         <select
@@ -189,7 +202,7 @@ const Draw: React.FC = () => {
             id="erase"
             style={{
               backgroundColor: eraseOn ? "white" : "inherit",
-              color: eraseOn ? "red" : "white",
+              color: !darkMode && !eraseOn ? "white" : "red",
             }}
             onClick={() => {
               setEraseOn((state) => !state);
@@ -232,6 +245,10 @@ const Draw: React.FC = () => {
         onChange={(e) => {
           setDesc(e.currentTarget.value);
         }}
+        style={{
+          backgroundColor: darkMode ? "transparent" : "white",
+          color: darkMode ? "red" : "black",
+        }}
       />
       <button onClick={handlePost}>Post</button>
     </DrawContainer>
@@ -241,9 +258,7 @@ const Draw: React.FC = () => {
 const DrawContainer = styled.div`
   overflow: hidden;
   font-size: 16px;
-  color: black;
   font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-  box-shadow: 10px 5px 5px lightgray;
   border: 3px solid red;
   border-radius: 30px;
   display: flex;
@@ -253,8 +268,6 @@ const DrawContainer = styled.div`
   .top {
     display: flex;
     justify-content: space-evenly;
-    background-color: red;
-    color: white;
     font-weight: bold;
 
     p {
@@ -283,7 +296,6 @@ const DrawContainer = styled.div`
       display: flex;
       border-bottom: 3px solid crimson;
       overflow: hidden;
-      background-color: red;
       .controls__color {
         width: 50px;
         height: 50px;
@@ -291,20 +303,17 @@ const DrawContainer = styled.div`
     }
     #controls__range {
       display: flex;
-      background-color: red;
       #range {
         width: 90%;
         margin: 10px auto;
       }
     }
     #controls__btns {
-      background-color: red;
       display: flex;
       justify-content: space-evenly;
       button {
         background-color: transparent;
         border: 3px solid crimson;
-        color: white;
         width: 50%;
         border-radius: 10px;
         font-size: 20px;
@@ -323,10 +332,8 @@ const DrawContainer = styled.div`
   }
 
   button {
-    background-color: red;
     height: 50px;
     font-size: 24px;
-    color: white;
   }
 `;
 

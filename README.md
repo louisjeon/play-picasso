@@ -24,6 +24,8 @@
 
 - Chakra-UI
 
+- React-Query
+
 - Mongoose
 
 - Axios

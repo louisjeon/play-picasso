@@ -1,30 +1,34 @@
 import styled from "@emotion/styled";
-import React, { useEffect, useState } from "react";
+import React from "react";
+import { useQuery } from "react-query";
+import { fetchPosts } from "../api";
+import { Loader } from "../components/Loader";
 import { Post } from "../components/Post";
-import { axiosInstance } from "../config";
+import { IPost } from "../types";
 
 const Feed: React.FC = () => {
-  const [posts, setPosts] = useState([]);
-
-  useEffect(() => {
-    const fetchPosts = async () => {
-      const res = await axiosInstance.get("/posts");
-      setPosts(res.data);
-    };
-    fetchPosts();
-  }, []);
+  const { isLoading: postsLoading, data: posts } = useQuery<IPost[]>(
+    ["posts"],
+    () => fetchPosts()
+  );
 
   return (
     <FeedContainer>
-      {posts.map((post, index) => (
-        <Post className="post" key={index} {...post} />
-      ))}
+      {postsLoading ? (
+        <Loader />
+      ) : (
+        posts?.map((post, index) => <Post key={index} {...post} />)
+      )}
     </FeedContainer>
   );
 };
 
 const FeedContainer = styled.div`
-  overflow: hidden;
+  justify-content: space-around;
+  display: flex;
+  flex-direction: column;
+  width: fit-content;
+  margin: auto;
 `;
 
 export default Feed;

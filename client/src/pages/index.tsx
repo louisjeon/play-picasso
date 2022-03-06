@@ -1,9 +1,17 @@
+import { Flex, Image } from "@chakra-ui/react";
 import styled from "@emotion/styled";
+import images from "../images";
 
 const Home = () => {
   return (
     <HomeContainer>
       <h2>Play Picasso</h2>
+      <br />
+      <Flex justifyContent="space-evenly">
+        {Object.entries(images).map(([alt, src], index) => {
+          return <Image key={index} src={src} alt={alt} width="100px" />;
+        })}
+      </Flex>
       <br />
       <p>
         Play Picasso is a modern art social network service where users can

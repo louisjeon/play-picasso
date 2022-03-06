@@ -1,3 +1,5 @@
+import { Feelings } from "./hooks/useFeelings";
+
 export interface IUser {
   coverPicture: string;
   createdAt: string;
@@ -13,10 +15,23 @@ export interface IUser {
   _id: string;
 }
 
+export interface IPost {
+  _id: string;
+  createdAt: string;
+  desc: string;
+  img: string;
+  likes: string[];
+  updatedAt: string;
+  userId: string;
+  username: string;
+  feeling: Feelings;
+}
+
 export interface IState {
   auth: {
     error: boolean;
     isFetching: false;
     user: IUser;
   };
+  userNav: boolean;
 }

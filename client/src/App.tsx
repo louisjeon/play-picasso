@@ -9,7 +9,7 @@ import Draw from "./pages/draw";
 import Feed from "./pages/feed";
 import Find from "./pages/find";
 import Login from "./pages/login";
-import { MyPage } from "./pages/mypage";
+import MyPage from "./pages/myPage";
 import Stocks from "./pages/stocks";
 
 export const App = () => {

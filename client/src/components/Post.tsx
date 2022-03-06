@@ -1,24 +1,13 @@
 import { Box, Flex, Image } from "@chakra-ui/react";
 import styled from "@emotion/styled";
 import React, { useState } from "react";
-import { useSelector } from "react-redux";
-import { axiosInstance } from "../config";
-import { Feelings, useFeelings } from "../hooks/useFeelings";
-import { IState } from "../types";
+import { axiosInstance } from "../api";
+import { useDarkMode } from "../hooks/useDarkMode";
+import { useFeelings } from "../hooks/useFeelings";
+import { useUser } from "../hooks/useUser";
+import { IPost } from "../types";
 
-interface PostProps {
-  _id: string;
-  createdAt: string;
-  desc: string;
-  img: string;
-  likes: Array<string>;
-  updatedAt: string;
-  userId: string;
-  username: string;
-  feeling: Feelings;
-}
-
-export const Post: React.FC<PostProps> = ({
+export const Post: React.FC<IPost> = ({
   _id,
   createdAt,
   desc,
@@ -29,12 +18,13 @@ export const Post: React.FC<PostProps> = ({
   username,
   feeling,
 }) => {
-  const user: any = useSelector<IState>((state) => state.auth.user);
-  const likedBefore = likes.includes(user._id);
+  const user = useUser();
+  const likedBefore = likes.includes(user?._id);
   const feelings = useFeelings();
   const [clicked, setClicked] = useState(false);
   const [liked, setLiked] = useState(likedBefore);
   const [newLike, setNewLike] = useState(0);
+  const darkMode = useDarkMode();
 
   const timeForm = () => {
     let [date, time] = createdAt.split("T");
@@ -56,7 +46,7 @@ export const Post: React.FC<PostProps> = ({
 
   const handleLike = async () => {
     try {
-      await axiosInstance.put(`/posts/${_id}/like`, { userId: user._id });
+      await axiosInstance.put(`/posts/${_id}/like`, { userId: user?._id });
       setLiked((unliking) => {
         if (likedBefore) {
           if (unliking) {
@@ -79,7 +69,7 @@ export const Post: React.FC<PostProps> = ({
   };
 
   return (
-    <PostContainer>
+    <PostContainer style={{ color: darkMode ? "white" : "black" }}>
       <Flex id="profile">
         <Image
           boxSize="2rem"
@@ -115,6 +105,7 @@ const PostContainer = styled.div`
   border: 1px solid red;
   border-radius: 10px;
   margin-bottom: 20px;
+  max-width: 300px;
 
   #profile {
     align-items: center;

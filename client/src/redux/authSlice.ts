@@ -31,6 +31,7 @@ export const authSlice = createSlice({
       };
     },
     logout: () => {
+      localStorage.removeItem("user");
       return {
         user: null,
         isFetching: false,

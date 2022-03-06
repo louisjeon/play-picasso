@@ -2,8 +2,8 @@ import { Flex } from "@chakra-ui/react";
 import styled from "@emotion/styled";
 import { useRef, useState } from "react";
 import { useDispatch } from "react-redux";
-import { axiosInstance } from "../config";
-import { loginSuccess } from "../redux/authSlice";
+import { axiosInstance } from "../api";
+import { loginFailure, loginStart, loginSuccess } from "../redux/authSlice";
 
 const Login = () => {
   const emailRef = useRef<HTMLInputElement>(null);
@@ -18,6 +18,7 @@ const Login = () => {
   const handleLogin = async (e: any) => {
     e.preventDefault();
     try {
+      dispatch(loginStart());
       const res = await axiosInstance.post("/auth/login", {
         username: usernameRef.current?.value,
         password: passwordRef.current?.value,
@@ -28,6 +29,7 @@ const Login = () => {
       res.data && window.location.replace("/feed");
     } catch (err) {
       console.log(err);
+      dispatch(loginFailure());
       setError(true);
     }
   };

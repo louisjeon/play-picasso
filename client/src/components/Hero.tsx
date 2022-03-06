@@ -1,20 +1,22 @@
 import { Flex, Heading, Image } from "@chakra-ui/react";
 import styled from "@emotion/styled";
-import { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
+import { useDarkMode } from "../hooks/useDarkMode";
+import { useUser } from "../hooks/useUser";
+import { useUserNavOn } from "../hooks/useUserNavOn";
 import { logout } from "../redux/authSlice";
-import { IState } from "../types";
 import { ColorModeSwitcher } from "./ColorModeSwitcher";
 
 export const Hero = ({ title }: any) => {
   const dispatch = useDispatch();
-  const user: any = useSelector<IState>((state) => state.auth.user);
-  const [userNavOn, setUserNavOn] = useState(false);
+  const user = useUser();
+  const darkMode = useDarkMode();
+  const userNavOn = useUserNavOn();
 
   const handleLogout = () => {
-    localStorage.removeItem("user");
     dispatch(logout());
+    window.location.replace("/feed");
   };
 
   return (
@@ -22,7 +24,6 @@ export const Hero = ({ title }: any) => {
       <Heading fontSize="40px" fontFamily="inherit">
         <Link to="/feed">{title}</Link>
       </Heading>
-
       <Flex alignItems="center">
         <ColorModeSwitcher
           justifySelf="flex-end"
@@ -31,11 +32,9 @@ export const Hero = ({ title }: any) => {
         />
         {user ? (
           <>
-            <CustomBtn
-              onClick={() => setUserNavOn((state) => !state)}
-              style={{ paddingLeft: 0 }}
-            >
+            <CustomBtn id="userNavBtn" style={{ paddingLeft: 0 }}>
               <Image
+                id="userNavImg"
                 boxSize="2rem"
                 borderRadius="full"
                 src={
@@ -44,18 +43,20 @@ export const Hero = ({ title }: any) => {
                 }
                 alt="Fluffybuns the destroyer"
               />
-              <span>{user.username}</span>
+              <span id="userNavName">{user.username}</span>
             </CustomBtn>
             {userNavOn && (
-              <UserNav>
-                <Link to="/mypage" onClick={() => setUserNavOn(false)}>
+              <UserNav
+                style={{ backgroundColor: darkMode ? "#1A202C" : "white" }}
+              >
+                <Link to="/mypage">
                   <CustomBtn>
-                    <span className="material-icons">account_circle</span>My
+                    <span className="material-icons">account_circle</span> My
                     Account
                   </CustomBtn>
                 </Link>
                 <CustomBtn onClick={handleLogout}>
-                  <span className="material-icons">vpn_key</span>Logout
+                  <span className="material-icons">vpn_key</span> Logout
                 </CustomBtn>
               </UserNav>
             )}
@@ -95,8 +96,4 @@ const UserNav = styled.ul`
   font-family: Segoe UI, Tahoma, Geneva, Verdana, sans-serif;
   border: 1px solid red;
   overflow: hidden;
-  background-color: ${(props) => {
-    console.log(props);
-    return "white";
-  }}; ;
 `;
