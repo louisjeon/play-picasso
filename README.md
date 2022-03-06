@@ -4,7 +4,7 @@
 
 ---
 
-- Play Picasso is modern art-oriented SNS where users can express their feelings with simple drawing and by sharing them.
+- Play Picasso is modern SNS that users can express their feelings with simple drawing and by sharing them.
 
 <br/>
 
