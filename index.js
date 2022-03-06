@@ -2,9 +2,9 @@ const express = require("express");
 const app = express();
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
-const helmet = require("helmet");
-const morgan = require("morgan");
-const methodOverride = require("method-override");
+// const helmet = require("helmet");
+// const morgan = require("morgan");
+// const methodOverride = require("method-override");
 const userRoute = require("./routes/users");
 const authRoute = require("./routes/auth");
 const postRoute = require("./routes/posts");
@@ -19,9 +19,9 @@ mongoose.connect(process.env.MONGO_URL, { useNewUrlParser: true }, () => {
 
 //middleware
 app.use(express.json());
-app.use(helmet());
-app.use(morgan("common"));
-app.use(methodOverride("_method"));
+// app.use(helmet());
+// app.use(morgan("common"));
+// app.use(methodOverride("_method"));
 app.use(function (req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
   res.header(
