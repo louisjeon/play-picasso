@@ -2,7 +2,7 @@ import { Flex, Image } from "@chakra-ui/react";
 import styled from "@emotion/styled";
 import images from "../images";
 
-const Home = () => {
+const Home: React.FC = () => {
   return (
     <HomeContainer>
       <h2>Play Picasso</h2>

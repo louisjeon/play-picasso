@@ -6,7 +6,7 @@ import { axiosInstance } from "../api";
 import { useUser } from "../hooks/useUser";
 import { loginSuccess } from "../redux/authSlice";
 
-const MyPage = () => {
+const MyPage: React.FC = () => {
   const user = useUser();
   const emailRef = useRef<HTMLInputElement>(null);
   const usernameRef = useRef<HTMLInputElement>(null);

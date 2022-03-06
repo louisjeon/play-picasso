@@ -5,7 +5,7 @@ import { useDispatch } from "react-redux";
 import { axiosInstance } from "../api";
 import { loginFailure, loginStart, loginSuccess } from "../redux/authSlice";
 
-const Login = () => {
+const Login: React.FC = () => {
   const emailRef = useRef<HTMLInputElement>(null);
   const usernameRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
